@@ -1,0 +1,8 @@
+.DS_Store
+.build/
+build/
+dist/
+*.xcuserdata/
+verification-*.png
+window-*.png
+.window-exact.png-*
