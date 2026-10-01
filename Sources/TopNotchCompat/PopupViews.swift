@@ -41,6 +41,10 @@ final class WallpaperPreviewView: NSView {
 
     override func draw(_ dirtyRect: NSRect) {
         guard let context = NSGraphicsContext.current?.cgContext else { return }
+        context.saveGState()
+        context.addPath(Self.topRoundedPath(in: bounds, radius: 10))
+        context.clip()
+
         let colors = [
             NSColor(calibratedRed: 0.35, green: 0.12, blue: 0.82, alpha: 1).cgColor,
             NSColor(calibratedRed: 0.72, green: 0.28, blue: 0.86, alpha: 1).cgColor,
@@ -76,10 +80,32 @@ final class WallpaperPreviewView: NSView {
             context.fill(notch)
         }
 
-        let cameraCenter = CGPoint(x: bounds.midX - 6, y: bounds.maxY - topHeight / 2)
+        let cameraCenter = CGPoint(x: bounds.midX - 3, y: bounds.maxY - topHeight / 2)
         context.setFillColor(CGColor(red: 0.06, green: 0.06, blue: 0.06, alpha: 1))
         context.fillEllipse(in: CGRect(x: cameraCenter.x - 3, y: cameraCenter.y - 3, width: 6, height: 6))
         context.setFillColor(CGColor(red: 0.2, green: 0.9, blue: 0.35, alpha: 1))
-        context.fillEllipse(in: CGRect(x: cameraCenter.x + 5, y: cameraCenter.y - 1.25, width: 2.5, height: 2.5))
+        context.fillEllipse(in: CGRect(x: cameraCenter.x + 3, y: cameraCenter.y - 1.25, width: 2.5, height: 2.5))
+        context.restoreGState()
+    }
+
+    private static func topRoundedPath(in rect: CGRect, radius: CGFloat) -> CGPath {
+        let radius = min(radius, rect.width / 2, rect.height)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY - radius))
+        path.addArc(
+            tangent1End: CGPoint(x: rect.minX, y: rect.maxY),
+            tangent2End: CGPoint(x: rect.minX + radius, y: rect.maxY),
+            radius: radius
+        )
+        path.addLine(to: CGPoint(x: rect.maxX - radius, y: rect.maxY))
+        path.addArc(
+            tangent1End: CGPoint(x: rect.maxX, y: rect.maxY),
+            tangent2End: CGPoint(x: rect.maxX, y: rect.maxY - radius),
+            radius: radius
+        )
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        path.closeSubpath()
+        return path
     }
 }

@@ -2,7 +2,7 @@
 
 A native macOS menu-bar utility for making the menu bar black on modern macOS without covering Apple's menu text or status items.
 
-TopNotchCompat is inspired by the behavior of [TopNotch](https://topnotch.app), but it is an independent implementation and does not copy TopNotch's copyrighted resources, EULA, promotional content, or update service.
+TopNotchCompat is inspired by the behavior of TopNotch, but it is an independent implementation and does not copy TopNotch's copyrighted resources, EULA, promotional content, or update service. Project source and releases are available on [GitHub](https://github.com/MikuBlog/TopNotchCompat).
 
 ## What it does
 
@@ -21,7 +21,7 @@ TopNotchCompat is inspired by the behavior of [TopNotch](https://topnotch.app), 
 
 ## Install and run
 
-1. Download and unpack `TopNotchCompat-v1.0-macOS.zip` from the release.
+1. Download and unpack `TopNotchCompat-v1.0.1-macOS.zip` from the release.
 2. Move `TopNotchCompat.app` to `/Applications`.
 3. Quit the original TopNotch if it is running.
 4. Open TopNotchCompat and accept the startup notice.
@@ -64,7 +64,7 @@ Scripts/package-release.sh
 The script rebuilds the app and writes:
 
 ```text
-dist/TopNotchCompat-v1.0-macOS.zip
+dist/TopNotchCompat-v1.0.1-macOS.zip
 ```
 
 ## Troubleshooting

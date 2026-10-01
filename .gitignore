@@ -5,4 +5,5 @@ dist/
 *.xcuserdata/
 verification-*.png
 window-*.png
+popup-layout*.png
 .window-exact.png-*

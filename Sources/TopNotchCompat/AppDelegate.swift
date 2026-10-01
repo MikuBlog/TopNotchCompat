@@ -225,7 +225,7 @@ extension AppDelegate: StatusItemControllerDelegate {
     }
 
     func statusItemControllerDidRequestWebsite() {
-        NSWorkspace.shared.open(URL(string: "https://topnotch.app")!)
+        NSWorkspace.shared.open(URL(string: "https://github.com/MikuBlog/TopNotchCompat")!)
     }
 
     func statusItemControllerDidRequestHideIcon() {

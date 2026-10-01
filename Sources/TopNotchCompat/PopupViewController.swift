@@ -67,16 +67,33 @@ final class PopupViewController: NSViewController {
         parent.addSubview(card)
 
         let label = textLabel("Inspired by TopNotch", color: .secondaryLabelColor, font: .systemFont(ofSize: 12))
-        label.frame = NSRect(x: 15, y: 14, width: 109, height: 15)
-        card.addSubview(label)
-
-        let link = linkButton("TopNotch app", target: self, action: #selector(openWebsite))
-        link.frame = NSRect(x: 120, y: 14, width: 70, height: 15)
-        card.addSubview(link)
-
-        let chevron = NSImageView(frame: NSRect(x: 194, y: 12, width: 8, height: 11))
+        let link = linkButton("GitHub", target: self, action: #selector(openWebsite))
+        let chevron = NSImageView(frame: .zero)
         chevron.image = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: nil)
         chevron.contentTintColor = NSColor.systemBlue
+
+        label.sizeToFit()
+        link.sizeToFit()
+        let labelSize = label.fittingSize
+        let linkSize = link.fittingSize
+        let chevronSize = chevron.image?.size ?? NSSize(width: 8, height: 11)
+        let rowWidth = labelSize.width + 6 + linkSize.width + 5 + chevronSize.width
+        let rowX = (card.bounds.width - rowWidth) / 2
+        let textY = (card.bounds.height - max(labelSize.height, linkSize.height)) / 2
+        label.frame = NSRect(origin: CGPoint(x: rowX, y: textY), size: labelSize)
+        link.frame = NSRect(
+            origin: CGPoint(x: label.frame.maxX + 6, y: textY),
+            size: linkSize
+        )
+        chevron.frame = NSRect(
+            x: link.frame.maxX + 5,
+            y: (card.bounds.height - chevronSize.height) / 2,
+            width: chevronSize.width,
+            height: chevronSize.height
+        )
+
+        card.addSubview(label)
+        card.addSubview(link)
         card.addSubview(chevron)
     }
 
@@ -97,10 +114,10 @@ final class PopupViewController: NSViewController {
         card.addSubview(roundCornersButton)
 
         let radiusLabel = textLabel("Radius:", color: .labelColor, font: .systemFont(ofSize: 11))
-        radiusLabel.frame = NSRect(x: 157, y: 66, width: 43, height: 14)
+        radiusLabel.frame = NSRect(x: 149, y: 66, width: 44, height: 14)
         card.addSubview(radiusLabel)
 
-        radiusPopup = NSPopUpButton(frame: NSRect(x: 199, y: 61, width: 79, height: 22), pullsDown: false)
+        radiusPopup = NSPopUpButton(frame: NSRect(x: 198, y: 61, width: 79, height: 22), pullsDown: false)
         radiusPopup.addItems(withTitles: ["Small", "Medium", "High"])
         radiusPopup.target = self
         radiusPopup.action = #selector(changeRadius)
@@ -111,7 +128,7 @@ final class PopupViewController: NSViewController {
         dynamicButton.frame = NSRect(x: 11, y: 91, width: 173, height: 18)
         card.addSubview(dynamicButton)
 
-        let info = NSButton(frame: NSRect(x: 184, y: 88, width: 24, height: 24))
+        let info = NSButton(frame: NSRect(x: 253, y: 88, width: 24, height: 24))
         info.bezelStyle = .regularSquare
         info.isBordered = false
         info.image = NSImage(systemSymbolName: "info.circle", accessibilityDescription: "About dynamic wallpapers")
@@ -136,37 +153,48 @@ final class PopupViewController: NSViewController {
         description.alignment = .center
         description.lineBreakMode = .byWordWrapping
         description.maximumNumberOfLines = 3
-        description.frame = NSRect(x: -2, y: 97, width: 291, height: 56)
+        description.frame = NSRect(x: 14, y: 102, width: 259, height: 52)
         card.addSubview(description)
 
-        enabledSwitch = NSSwitch(frame: NSRect(x: 123, y: 166, width: 42, height: 25))
+        enabledSwitch = NSSwitch(frame: NSRect(x: 122.5, y: 163, width: 42, height: 25))
         enabledSwitch.target = self
         enabledSwitch.action = #selector(toggleEnabled)
         card.addSubview(enabledSwitch)
 
-        progressIndicator = NSProgressIndicator(frame: NSRect(x: 131, y: 30, width: 16, height: 16))
+        progressIndicator = NSProgressIndicator(frame: NSRect(x: 0, y: 34, width: 16, height: 16))
         progressIndicator.style = .spinning
         progressIndicator.controlSize = .small
         progressIndicator.isDisplayedWhenStopped = false
         card.addSubview(progressIndicator)
 
         processingLabel = textLabel("Processing wallpaper...", color: .secondaryLabelColor, font: .systemFont(ofSize: 10))
-        processingLabel.frame = NSRect(x: 153, y: 31, width: 115, height: 14)
+        processingLabel.sizeToFit()
+        let processingWidth = processingLabel.fittingSize.width
+        let processingGroupX = (287 - processingWidth - 22) / 2
+        progressIndicator.setFrameOrigin(NSPoint(x: processingGroupX, y: 34))
+        processingLabel.frame = NSRect(x: processingGroupX + 22, y: 35, width: processingWidth, height: 14)
         processingLabel.isHidden = true
         card.addSubview(processingLabel)
     }
 
     private func configureFooter(in parent: NSView) {
         let appName = linkButton("TopNotchCompat", target: self, action: #selector(openWebsite))
-        appName.frame = NSRect(x: 22, y: 445, width: 78, height: 19)
+        appName.sizeToFit()
+        appName.frame = NSRect(
+            x: 20,
+            y: 445,
+            width: appName.fittingSize.width,
+            height: max(19, appName.fittingSize.height)
+        )
         parent.addSubview(appName)
 
-        let version = textLabel("v1.0", color: .tertiaryLabelColor, font: .systemFont(ofSize: 10))
+        let versionNumber = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        let version = textLabel("v\(versionNumber)", color: .tertiaryLabelColor, font: .systemFont(ofSize: 10))
         version.alignment = .center
-        version.frame = NSRect(x: 106, y: 448, width: 84, height: 13)
+        version.frame = NSRect(x: (parent.bounds.width - 84) / 2, y: 448, width: 84, height: 13)
         parent.addSubview(version)
 
-        let gear = NSButton(frame: NSRect(x: 283, y: 443, width: 26, height: 27))
+        let gear = NSButton(frame: NSRect(x: 281, y: 443, width: 26, height: 27))
         gear.isBordered = false
         gear.bezelStyle = .regularSquare
         gear.image = NSImage(systemSymbolName: "gearshape.fill", accessibilityDescription: "Menu")
@@ -183,6 +211,7 @@ final class PopupViewController: NSViewController {
         roundCornersButton.state = settings.roundCorners ? .on : .off
         dynamicButton.state = settings.useDynamicWallpapers ? .on : .off
         radiusPopup.selectItem(at: ["small", "medium", "high"].firstIndex(of: settings.cornerRadius.rawValue) ?? 1)
+        radiusPopup.isEnabled = settings.roundCorners
         previewView.isEnabled = settings.isEnabled
         previewView.needsDisplay = true
     }
